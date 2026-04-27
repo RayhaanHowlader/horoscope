@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Daily Horoscope - Celestial Elite</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface": "#e3e1e9","on-surface-variant": "#d1c5b4","outline-variant": "#4e4639","tertiary": "#c8bfff","surface-variant": "#34343a","surface-container-high": "#292a2f","primary-fixed": "#ffdea5","surface-bright": "#38393f","surface-container": "#1e1f25","secondary-fixed": "#dbe3ec","on-primary": "#412d00","tertiary-fixed-dim": "#c8bfff","on-secondary-container": "#b1b9c1","surface-container-highest": "#34343a","surface-tint": "#e9c176","primary-fixed-dim": "#e9c176","background": "#121318","secondary": "#bfc7cf","outline": "#9a8f80","primary-container": "#c5a059","surface-container-low": "#1a1b21","secondary-container": "#424a51","on-primary-container": "#4e3700","surface-container-lowest": "#0d0e13","primary": "#e9c176","on-background": "#e3e1e9","tertiary-container": "#a69ede"
+          },
+          borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+          fontFamily: { headline: ["Noto Serif"], body: ["Manrope"], label: ["Manrope"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    .loader { border: 3px solid rgba(233,193,118,0.1); border-top-color: #e9c176; border-radius: 50%; width: 32px; height: 32px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .sign-btn.active { background: rgba(233,193,118,0.15); border-color: rgba(233,193,118,0.5); color: #e9c176; }
+    .day-btn.active { background: rgba(233,193,118,0.15); color: #e9c176; }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col">
+
+  <!-- Nav -->
+  <nav class="bg-[#121318]/80 backdrop-blur-2xl top-0 sticky border-b border-[#4e4639]/15 shadow-2xl shadow-black/40 z-50">
+    <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+      <a href="index.html" class="text-2xl font-serif tracking-[0.2em] uppercase text-[#e9c176]">Celestial Elite</a>
+      <div class="hidden md:flex gap-8 items-center font-serif tracking-tight">
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2" href="index.html">Home</a>
+        <a class="text-[#e9c176] font-bold border-b-2 border-[#e9c176] pb-1 px-3 py-2" href="horoscope.html">Horoscopes</a>
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2" href="birth-chart.html">Birth Charts</a>
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2" href="kundli-match.html">Kundli Match</a>
+      </div>
+      <button class="md:hidden text-[#e9c176]" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-[#1a1b21] border-t border-[#4e4639]/20 px-6 py-4 flex flex-col gap-4">
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="index.html">Home</a>
+      <a class="text-[#e9c176] font-medium py-2" href="horoscope.html">Horoscopes</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="birth-chart.html">Birth Charts</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="kundli-match.html">Kundli Match</a>
+    </div>
+  </nav>
+
+  <main class="flex-grow w-full py-16">
+    <div class="max-w-screen-xl mx-auto px-6">
+      <!-- Header -->
+      <div class="text-center mb-16">
+        <h1 class="font-headline text-5xl md:text-6xl text-primary tracking-wide mb-4">Daily Horoscope</h1>
+        <p class="font-body text-on-surface-variant text-lg font-light">Select your zodiac sign and discover what the cosmos has in store.</p>
+      </div>
+
+      <!-- Day Selector -->
+      <div class="flex justify-center gap-3 mb-12">
+        <button onclick="setDay('yesterday')" id="btn-yesterday" class="day-btn px-6 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-sm font-label hover:text-primary transition-colors">Yesterday</button>
+        <button onclick="setDay('today')" id="btn-today" class="day-btn active px-6 py-2 rounded-full border border-outline-variant/30 text-sm font-label transition-colors">Today</button>
+        <button onclick="setDay('tomorrow')" id="btn-tomorrow" class="day-btn px-6 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-sm font-label hover:text-primary transition-colors">Tomorrow</button>
+      </div>
+
+      <!-- Sign Grid -->
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-3 mb-12">
+        <!-- Signs injected by JS -->
+      </div>
+
+      <!-- Loading -->
+      <div id="loading" class="hidden flex justify-center py-16">
+        <div class="loader"></div>
+      </div>
+
+      <!-- Horoscope Display -->
+      <div id="horoscope-display" class="hidden max-w-3xl mx-auto">
+        <!-- Sign Header -->
+        <div class="text-center mb-10">
+          <div id="sign-symbol" class="text-7xl mb-4"></div>
+          <h2 id="sign-name" class="font-headline text-4xl text-primary mb-2"></h2>
+          <p id="sign-dates" class="font-label text-sm text-on-surface-variant uppercase tracking-widest"></p>
+        </div>
+
+        <!-- Prediction Date -->
+        <p id="prediction-date" class="hidden font-label text-xs uppercase tracking-widest text-secondary text-center mb-6"></p>
+
+        <!-- 6 Category Cards — matches API response fields exactly -->
+        <!-- prediction.personal_life, profession, health, travel, luck, emotions -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+          <div class="bg-surface-container-high rounded-xl p-6 border border-outline-variant/20">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined text-pink-400">favorite</span>
+              <h4 class="font-label text-sm uppercase tracking-wider text-secondary">Personal Life</h4>
+            </div>
+            <p id="personal-life-prediction" class="font-body text-on-surface-variant text-sm leading-relaxed"></p>
+          </div>
+          <div class="bg-surface-container-high rounded-xl p-6 border border-outline-variant/20">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined text-green-400">work</span>
+              <h4 class="font-label text-sm uppercase tracking-wider text-secondary">Profession</h4>
+            </div>
+            <p id="profession-prediction" class="font-body text-on-surface-variant text-sm leading-relaxed"></p>
+          </div>
+          <div class="bg-surface-container-high rounded-xl p-6 border border-outline-variant/20">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined text-blue-400">health_and_safety</span>
+              <h4 class="font-label text-sm uppercase tracking-wider text-secondary">Health</h4>
+            </div>
+            <p id="health-prediction" class="font-body text-on-surface-variant text-sm leading-relaxed"></p>
+          </div>
+          <div class="bg-surface-container-high rounded-xl p-6 border border-outline-variant/20">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined text-yellow-400">flight_takeoff</span>
+              <h4 class="font-label text-sm uppercase tracking-wider text-secondary">Travel</h4>
+            </div>
+            <p id="travel-prediction" class="font-body text-on-surface-variant text-sm leading-relaxed"></p>
+          </div>
+          <div class="bg-surface-container-high rounded-xl p-6 border border-outline-variant/20">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined text-primary">star</span>
+              <h4 class="font-label text-sm uppercase tracking-wider text-secondary">Luck</h4>
+            </div>
+            <p id="luck-prediction" class="font-body text-on-surface-variant text-sm leading-relaxed"></p>
+          </div>
+          <div class="bg-surface-container-high rounded-xl p-6 border border-outline-variant/20">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="material-symbols-outlined text-purple-400">mood</span>
+              <h4 class="font-label text-sm uppercase tracking-wider text-secondary">Emotions</h4>
+            </div>
+            <p id="emotions-prediction" class="font-body text-on-surface-variant text-sm leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- All Signs Grid (default view) -->
+      <div id="all-signs-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#1a1b21] w-full border-t border-[#4e4639]/10 flex flex-col md:flex-row justify-between items-center px-12 py-10 gap-6 mt-auto">
+    <div class="text-lg font-serif italic text-[#e9c176]">Celestial Elite</div>
+    <div class="flex flex-wrap gap-6 items-center justify-center font-sans text-sm text-slate-500">
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Privacy Policy</a>
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Terms of Grace</a>
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Contact Bureau</a>
+    </div>
+    <div class="font-sans text-sm text-slate-500">© 2024 Celestial Elite. Bound by the Stars.</div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/horoscope.js"></script>
+</body>
+</html>

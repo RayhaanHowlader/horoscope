@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Celestial Elite - Your Personal Star Map</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "error-container": "#93000a","on-surface": "#e3e1e9","on-surface-variant": "#d1c5b4","outline-variant": "#4e4639","tertiary": "#c8bfff","error": "#ffb4ab","surface-dim": "#121318","on-secondary": "#293138","surface-variant": "#34343a","surface-container-high": "#292a2f","primary-fixed": "#ffdea5","surface-bright": "#38393f","surface-container": "#1e1f25","surface": "#121318","on-secondary-fixed": "#151c22","secondary-fixed": "#dbe3ec","on-tertiary-container": "#3a336b","on-tertiary": "#2f2860","tertiary-fixed": "#e5deff","on-primary-fixed-variant": "#5d4201","on-primary": "#412d00","on-primary-fixed": "#261900","tertiary-fixed-dim": "#c8bfff","on-secondary-container": "#b1b9c1","surface-container-highest": "#34343a","on-secondary-fixed-variant": "#40484e","surface-tint": "#e9c176","inverse-on-surface": "#2f3036","primary-fixed-dim": "#e9c176","background": "#121318","on-error": "#690005","on-tertiary-fixed-variant": "#463f78","secondary": "#bfc7cf","inverse-primary": "#775a19","outline": "#9a8f80","primary-container": "#c5a059","surface-container-low": "#1a1b21","secondary-container": "#424a51","on-primary-container": "#4e3700","surface-container-lowest": "#0d0e13","primary": "#e9c176","on-error-container": "#ffdad6","on-background": "#e3e1e9","inverse-surface": "#e3e1e9","tertiary-container": "#a69ede","secondary-fixed-dim": "#bfc7cf","on-tertiary-fixed": "#1a114a"
+          },
+          borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+          fontFamily: { headline: ["Noto Serif"], body: ["Manrope"], label: ["Manrope"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    .text-gradient { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased selection:bg-primary-container selection:text-on-primary-container">
+
+  <!-- Nav -->
+  <nav class="docked full-width top-0 sticky bg-[#121318]/80 backdrop-blur-2xl border-b border-[#4e4639]/15 shadow-2xl shadow-black/40 z-50">
+    <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+      <div class="text-2xl font-headline tracking-[0.2em] uppercase text-[#e9c176]">Celestial Elite</div>
+      <div class="hidden md:flex items-center gap-8 font-serif tracking-tight text-on-surface">
+        <a class="text-[#e9c176] font-bold border-b-2 border-[#e9c176] pb-1 px-3 py-1" href="index.html">Home</a>
+        <a class="text-slate-400 font-medium hover:text-[#e9c176] transition-all duration-300 px-3 py-1" href="horoscope.html">Horoscopes</a>
+        <a class="text-slate-400 font-medium hover:text-[#e9c176] transition-all duration-300 px-3 py-1" href="birth-chart.html">Birth Charts</a>
+        <a class="text-slate-400 font-medium hover:text-[#e9c176] transition-all duration-300 px-3 py-1" href="kundli-match.html">Kundli Match</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="text-[#e9c176] hover:bg-white/5 transition-all duration-300 p-2 rounded-full">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <!-- Mobile menu button -->
+        <button class="md:hidden text-[#e9c176]" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-[#1a1b21] border-t border-[#4e4639]/20 px-6 py-4 flex flex-col gap-4">
+      <a class="text-[#e9c176] font-medium py-2" href="index.html">Home</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="horoscope.html">Horoscopes</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="birth-chart.html">Birth Charts</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="kundli-match.html">Kundli Match</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero -->
+    <section class="relative min-h-[870px] flex items-center justify-center overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background z-10"></div>
+        <img alt="Deep space nebula" class="w-full h-full object-cover opacity-60" src="https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?auto=format&fit=crop&w=3000&q=80"/>
+      </div>
+      <div class="relative z-10 max-w-4xl mx-auto px-6 text-center mt-20 md:mt-0">
+        <p class="font-label text-sm md:text-base text-primary tracking-[0.3em] uppercase mb-6 opacity-90">Unlock the Cosmos</p>
+        <h1 class="font-headline text-5xl md:text-7xl lg:text-8xl tracking-wide text-on-surface mb-8 leading-tight">
+          Your Personal <br/>
+          <span class="bg-gradient-to-r from-primary to-primary-container text-gradient font-bold italic">Star Map.</span>
+        </h1>
+        <p class="font-body text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+          Navigate your life's journey with precision. Discover profound insights tailored exclusively to your unique celestial blueprint.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <a href="birth-chart.html" class="bg-gradient-to-r from-primary to-primary-container text-on-primary font-label font-semibold py-4 px-10 rounded-md hover:shadow-[0_0_30px_rgba(233,193,118,0.3)] transition-all duration-300 w-full sm:w-auto tracking-wide text-center">
+            Generate Birth Chart
+          </a>
+          <a href="kundli-match.html" class="text-primary font-label font-medium border-b border-primary/50 hover:border-primary transition-all duration-300 py-2 px-4 w-full sm:w-auto text-center">
+            Kundli Matching →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Daily Horoscope Snippets -->
+    <section class="py-24 relative z-20 bg-surface-container-lowest">
+      <div class="max-w-screen-2xl mx-auto px-6 md:px-12">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+          <div>
+            <h2 class="font-headline text-3xl md:text-4xl text-on-surface tracking-wide mb-2">Celestial Currents</h2>
+            <p class="font-body text-sm text-on-surface-variant uppercase tracking-widest">Daily Insights for the Zodiac</p>
+          </div>
+          <a href="horoscope.html" class="text-primary font-label text-sm flex items-center gap-2 hover:opacity-80 transition-opacity">
+            View All Signs <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+        <div class="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory scrollbar-hide" id="horoscope-preview">
+          <!-- Cards injected by JS or static previews -->
+          <div class="min-w-[280px] md:min-w-[320px] bg-surface-bright/40 backdrop-blur-xl rounded-xl p-8 border-t border-outline-variant/15 snap-start relative group hover:bg-surface-bright/60 transition-colors duration-500 cursor-pointer" onclick="window.location='horoscope.html?sign=aries'">
+            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">♈</div>
+            <div class="flex items-center gap-4 mb-6"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-tertiary/20 to-transparent flex items-center justify-center border border-tertiary/10"><span class="material-symbols-outlined text-tertiary">local_fire_department</span></div><div><h3 class="font-headline text-xl text-primary-fixed">Aries</h3><p class="font-label text-xs text-on-surface-variant uppercase tracking-wider">Mar 21 - Apr 19</p></div></div>
+            <p class="font-body text-on-surface-variant leading-relaxed text-sm">Dynamic energy surrounds you today. Trust your immediate instincts, but pause before committing to long-term promises.</p>
+            <div class="mt-6"><span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-label">Bold Focus</span></div>
+          </div>
+          <div class="min-w-[280px] md:min-w-[320px] bg-surface-bright/40 backdrop-blur-xl rounded-xl p-8 border-t border-outline-variant/15 snap-start relative group hover:bg-surface-bright/60 transition-colors duration-500 cursor-pointer" onclick="window.location='horoscope.html?sign=taurus'">
+            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">♉</div>
+            <div class="flex items-center gap-4 mb-6"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center border border-primary/10"><span class="material-symbols-outlined text-primary">landscape</span></div><div><h3 class="font-headline text-xl text-primary-fixed">Taurus</h3><p class="font-label text-xs text-on-surface-variant uppercase tracking-wider">Apr 20 - May 20</p></div></div>
+            <p class="font-body text-on-surface-variant leading-relaxed text-sm">Ground yourself in sensory experiences. Financial stability is highlighted, presenting an opportunity for a wise, calculated investment.</p>
+            <div class="mt-6"><span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-label">Grounded Growth</span></div>
+          </div>
+          <div class="min-w-[280px] md:min-w-[320px] bg-surface-bright/40 backdrop-blur-xl rounded-xl p-8 border-t border-outline-variant/15 snap-start relative group hover:bg-surface-bright/60 transition-colors duration-500 cursor-pointer" onclick="window.location='horoscope.html?sign=gemini'">
+            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">♊</div>
+            <div class="flex items-center gap-4 mb-6"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-secondary/20 to-transparent flex items-center justify-center border border-secondary/10"><span class="material-symbols-outlined text-secondary">air</span></div><div><h3 class="font-headline text-xl text-primary-fixed">Gemini</h3><p class="font-label text-xs text-on-surface-variant uppercase tracking-wider">May 21 - Jun 20</p></div></div>
+            <p class="font-body text-on-surface-variant leading-relaxed text-sm">Communication channels are wide open. A chance encounter could spark a brilliant idea. Keep your mind adaptable and curious.</p>
+            <div class="mt-6"><span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-label">Fluid Dialogue</span></div>
+          </div>
+          <div class="min-w-[280px] md:min-w-[320px] bg-surface-bright/40 backdrop-blur-xl rounded-xl p-8 border-t border-outline-variant/15 snap-start relative group hover:bg-surface-bright/60 transition-colors duration-500 cursor-pointer" onclick="window.location='horoscope.html?sign=cancer'">
+            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">♋</div>
+            <div class="flex items-center gap-4 mb-6"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-tertiary-container/20 to-transparent flex items-center justify-center border border-tertiary-container/10"><span class="material-symbols-outlined text-tertiary-container">water_drop</span></div><div><h3 class="font-headline text-xl text-primary-fixed">Cancer</h3><p class="font-label text-xs text-on-surface-variant uppercase tracking-wider">Jun 21 - Jul 22</p></div></div>
+            <p class="font-body text-on-surface-variant leading-relaxed text-sm">Emotional depths are stirring. Retreat to your sanctuary to process feelings before sharing them. Intuition is remarkably high today.</p>
+            <div class="mt-6"><span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-label">Deep Intuition</span></div>
+          </div>
+          <div class="min-w-[280px] md:min-w-[320px] bg-surface-bright/40 backdrop-blur-xl rounded-xl p-8 border-t border-outline-variant/15 snap-start relative group hover:bg-surface-bright/60 transition-colors duration-500 cursor-pointer" onclick="window.location='horoscope.html?sign=leo'">
+            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">♌</div>
+            <div class="flex items-center gap-4 mb-6"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center border border-primary/10"><span class="material-symbols-outlined text-primary">sunny</span></div><div><h3 class="font-headline text-xl text-primary-fixed">Leo</h3><p class="font-label text-xs text-on-surface-variant uppercase tracking-wider">Jul 23 - Aug 22</p></div></div>
+            <p class="font-body text-on-surface-variant leading-relaxed text-sm">Your natural charisma is at its peak. Step into the spotlight with confidence. Creative endeavors will flourish under today's cosmic energy.</p>
+            <div class="mt-6"><span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-label">Radiant Power</span></div>
+          </div>
+          <div class="min-w-[280px] md:min-w-[320px] bg-surface-bright/40 backdrop-blur-xl rounded-xl p-8 border-t border-outline-variant/15 snap-start relative group hover:bg-surface-bright/60 transition-colors duration-500 cursor-pointer" onclick="window.location='horoscope.html?sign=virgo'">
+            <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">♍</div>
+            <div class="flex items-center gap-4 mb-6"><div class="w-12 h-12 rounded-full bg-gradient-to-br from-secondary/20 to-transparent flex items-center justify-center border border-secondary/10"><span class="material-symbols-outlined text-secondary">eco</span></div><div><h3 class="font-headline text-xl text-primary-fixed">Virgo</h3><p class="font-label text-xs text-on-surface-variant uppercase tracking-wider">Aug 23 - Sep 22</p></div></div>
+            <p class="font-body text-on-surface-variant leading-relaxed text-sm">Analytical powers are sharp. Focus on details that others overlook. Health routines benefit from a thoughtful review today.</p>
+            <div class="mt-6"><span class="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-label">Precise Mind</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services -->
+    <section class="py-32 bg-surface">
+      <div class="max-w-screen-2xl mx-auto px-6 md:px-12">
+        <div class="text-center max-w-2xl mx-auto mb-20">
+          <h2 class="font-headline text-4xl md:text-5xl text-on-surface tracking-wide mb-6">Bespoke Divination</h2>
+          <p class="font-body text-on-surface-variant text-lg font-light">Elevate your understanding of self and universe through our meticulously curated astrological services.</p>
+        </div>
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <a href="birth-chart.html" class="bg-surface-container-low p-10 rounded-xl relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 block">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors"></div>
+            <span class="material-symbols-outlined text-4xl text-primary mb-8 block" style='font-variation-settings: "wght" 200;'>language</span>
+            <h3 class="font-headline text-2xl text-on-surface mb-4">Birth Chart Analysis</h3>
+            <p class="font-body text-on-surface-variant font-light leading-relaxed mb-8">A comprehensive decoding of your natal promise. Understand the precise planetary alignments at the moment of your birth.</p>
+            <span class="inline-flex items-center text-primary font-label text-sm uppercase tracking-wider">Explore <span class="material-symbols-outlined text-sm ml-2">east</span></span>
+          </a>
+          <a href="kundli-match.html" class="bg-surface-container-low p-10 rounded-xl relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 block">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-tertiary/5 rounded-full blur-3xl group-hover:bg-tertiary/10 transition-colors"></div>
+            <span class="material-symbols-outlined text-4xl text-tertiary mb-8 block" style='font-variation-settings: "wght" 200;'>all_inclusive</span>
+            <h3 class="font-headline text-2xl text-on-surface mb-4">Kundli Matching</h3>
+            <p class="font-body text-on-surface-variant font-light leading-relaxed mb-8">Guna Milan scoring, dosha analysis, and compatibility breakdown for marriage and relationships.</p>
+            <span class="inline-flex items-center text-primary font-label text-sm uppercase tracking-wider">Explore <span class="material-symbols-outlined text-sm ml-2">east</span></span>
+          </a>
+          <a href="horoscope.html" class="bg-surface-container-low p-10 rounded-xl relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 block">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-colors"></div>
+            <span class="material-symbols-outlined text-4xl text-secondary mb-8 block" style='font-variation-settings: "wght" 200;'>calendar_today</span>
+            <h3 class="font-headline text-2xl text-on-surface mb-4">Daily Horoscope</h3>
+            <p class="font-body text-on-surface-variant font-light leading-relaxed mb-8">Daily, weekly and monthly predictions for all 12 zodiac signs covering love, career, health and finance.</p>
+            <span class="inline-flex items-center text-primary font-label text-sm uppercase tracking-wider">Explore <span class="material-symbols-outlined text-sm ml-2">east</span></span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full border-t border-[#4e4639]/10 bg-[#1a1b21]">
+    <div class="flex flex-col md:flex-row justify-between items-center px-12 py-10 gap-6 w-full max-w-screen-2xl mx-auto">
+      <div class="text-lg font-serif italic text-[#e9c176]">Celestial Elite</div>
+      <div class="flex flex-wrap justify-center gap-6 font-sans text-sm tracking-wide text-slate-500">
+        <a class="hover:text-[#e9c176] transition-colors" href="#">Privacy Policy</a>
+        <a class="hover:text-[#e9c176] transition-colors" href="#">Terms of Grace</a>
+        <a class="hover:text-[#e9c176] transition-colors" href="#">Astral Ethics</a>
+        <a class="hover:text-[#e9c176] transition-colors" href="#">Contact Bureau</a>
+      </div>
+      <div class="font-sans text-sm text-slate-500">© 2024 Celestial Elite. Bound by the Stars.</div>
+    </div>
+  </footer>
+</body>
+</html>

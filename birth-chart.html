@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Birth Chart / Kundli Generator - Celestial Elite</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface": "#e3e1e9","on-surface-variant": "#d1c5b4","outline-variant": "#4e4639","tertiary": "#c8bfff","surface-variant": "#34343a","surface-container-high": "#292a2f","primary-fixed": "#ffdea5","surface-bright": "#38393f","surface-container": "#1e1f25","secondary-fixed": "#dbe3ec","on-tertiary": "#2f2860","on-primary": "#412d00","tertiary-fixed-dim": "#c8bfff","on-secondary-container": "#b1b9c1","surface-container-highest": "#34343a","surface-tint": "#e9c176","inverse-on-surface": "#2f3036","primary-fixed-dim": "#e9c176","background": "#121318","secondary": "#bfc7cf","inverse-primary": "#775a19","outline": "#9a8f80","primary-container": "#c5a059","surface-container-low": "#1a1b21","secondary-container": "#424a51","on-primary-container": "#4e3700","surface-container-lowest": "#0d0e13","primary": "#e9c176","on-background": "#e3e1e9","tertiary-container": "#a69ede","secondary-fixed-dim": "#bfc7cf"
+          },
+          borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+          fontFamily: { headline: ["Noto Serif"], body: ["Manrope"], label: ["Manrope"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    /* Kundli Chart SVG styles */
+    #kundli-svg { filter: drop-shadow(0 0 18px rgba(233,193,118,0.08)); }
+    #kundli-svg polygon:hover { fill: rgba(233,193,118,0.06) !important; cursor: default; }
+    /* Chart style toggle */
+    .chart-tab-active   { background: rgba(233,193,118,0.15); color: #e9c176; }
+    .chart-tab-inactive { background: transparent; color: #9a8f80; }
+    .chart-tab-inactive:hover { background: rgba(233,193,118,0.06); color: #d1c5b4; }
+    /* Loader */
+    .loader { border: 3px solid rgba(233,193,118,0.1); border-top-color: #e9c176; border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* Autocomplete */
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #1e1f25; border: 1px solid rgba(78,70,57,0.4); border-radius: 0.5rem; z-index: 100; max-height: 200px; overflow-y: auto; }
+    .autocomplete-item { padding: 10px 16px; cursor: pointer; font-size: 14px; color: #e3e1e9; }
+    .autocomplete-item:hover { background: rgba(233,193,118,0.08); color: #e9c176; }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col">
+
+  <!-- Nav -->
+  <nav class="bg-[#121318]/80 backdrop-blur-2xl top-0 sticky border-b border-[#4e4639]/15 shadow-2xl shadow-black/40 z-50">
+    <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+      <a href="index.html" class="text-2xl font-serif tracking-[0.2em] uppercase text-[#e9c176]">Celestial Elite</a>
+      <div class="hidden md:flex gap-8 items-center font-serif tracking-tight text-on-surface">
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2 rounded-lg" href="index.html">Home</a>
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2 rounded-lg" href="horoscope.html">Horoscopes</a>
+        <a class="text-[#e9c176] font-bold border-b-2 border-[#e9c176] pb-1 px-3 py-2" href="birth-chart.html">Birth Charts</a>
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2 rounded-lg" href="kundli-match.html">Kundli Match</a>
+      </div>
+      <button class="md:hidden text-[#e9c176]" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-[#1a1b21] border-t border-[#4e4639]/20 px-6 py-4 flex flex-col gap-4">
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="index.html">Home</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="horoscope.html">Horoscopes</a>
+      <a class="text-[#e9c176] font-medium py-2" href="birth-chart.html">Birth Charts</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="kundli-match.html">Kundli Match</a>
+    </div>
+  </nav>
+
+  <main class="flex-grow flex flex-col items-center justify-start w-full relative overflow-hidden py-24">
+    <!-- Ambient BG -->
+    <div class="absolute inset-0 z-0 pointer-events-none opacity-15 bg-[url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?auto=format&fit=crop&w=3000&q=80')] bg-cover bg-center mix-blend-screen"></div>
+
+    <!-- Input Section -->
+    <section class="relative z-10 w-full max-w-2xl px-6 mb-16">
+      <div class="text-center mb-16">
+        <h1 class="font-headline text-5xl md:text-6xl text-primary tracking-wide mb-6">Discover Your Chart</h1>
+        <p class="font-body text-lg text-on-surface-variant max-w-xl mx-auto font-light leading-relaxed">Enter your precise birth details to generate your Kundli and natal birth chart.</p>
+      </div>
+
+      <div class="bg-surface-variant/40 backdrop-blur-3xl rounded-xl p-10 md:p-14 border border-outline-variant/15 shadow-[0_0_60px_rgba(233,193,118,0.05)]">
+        <form id="birth-chart-form" class="space-y-8" onsubmit="return false;">
+          <!-- Step 1 -->
+          <div class="space-y-6">
+            <h2 class="font-headline text-xl text-primary border-b border-outline-variant/15 pb-4 mb-6">1. Identify</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block font-label text-sm text-secondary mb-2 uppercase tracking-wider">Full Name</label>
+                <input id="name" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-primary focus:ring-0 px-4 py-3 rounded-t-DEFAULT transition-colors bg-transparent placeholder:text-outline focus:outline-none focus:bg-surface-container-high/80" placeholder="e.g. Arjun Sharma" type="text"/>
+              </div>
+              <div>
+                <label class="block font-label text-sm text-secondary mb-2 uppercase tracking-wider">Gender</label>
+                <select id="gender" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-primary focus:ring-0 px-4 py-3 rounded-t-DEFAULT transition-colors bg-[#1e1f25] focus:outline-none appearance-none">
+                  <option value="" disabled selected>Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="space-y-6 pt-6">
+            <h2 class="font-headline text-xl text-primary border-b border-outline-variant/15 pb-4 mb-6">2. Chronology</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block font-label text-sm text-secondary mb-2 uppercase tracking-wider">Date of Birth</label>
+                <input id="dob" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-primary focus:ring-0 px-4 py-3 rounded-t-DEFAULT transition-colors bg-transparent focus:outline-none focus:bg-surface-container-high/80 [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-50" type="date"/>
+              </div>
+              <div>
+                <label class="block font-label text-sm text-secondary mb-2 uppercase tracking-wider">Exact Time</label>
+                <input id="tob" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-primary focus:ring-0 px-4 py-3 rounded-t-DEFAULT transition-colors bg-transparent focus:outline-none focus:bg-surface-container-high/80 [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-50" type="time"/>
+                <p class="text-xs text-on-surface-variant mt-2 font-light">Accuracy ensures precise ascendant calculation.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="space-y-6 pt-6">
+            <h2 class="font-headline text-xl text-primary border-b border-outline-variant/15 pb-4 mb-6">3. Coordinates</h2>
+            <div class="relative">
+              <label class="block font-label text-sm text-secondary mb-2 uppercase tracking-wider">Place of Birth</label>
+              <div class="flex items-center bg-surface-container-highest/50 border-b border-outline-variant/30 rounded-t-DEFAULT focus-within:border-primary focus-within:bg-surface-container-high/80 transition-colors">
+                <span class="material-symbols-outlined text-outline pl-4">location_on</span>
+                <input id="place" class="w-full bg-transparent border-none text-on-surface focus:ring-0 px-4 py-3 placeholder:text-outline focus:outline-none" placeholder="Search city, state, or country..." type="text" autocomplete="off"/>
+              </div>
+              <div id="place-suggestions" class="autocomplete-list hidden"></div>
+              <!-- Hidden fields for lat/lon/tz -->
+              <input type="hidden" id="lat"/>
+              <input type="hidden" id="lon"/>
+              <input type="hidden" id="tz"/>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div id="form-error" class="hidden text-red-400 text-sm text-center py-2 bg-red-900/20 rounded-lg px-4"></div>
+
+          <!-- Submit -->
+          <div class="pt-10 flex justify-center">
+            <button id="generate-btn" onclick="generateChart()" class="bg-gradient-to-r from-primary to-primary-container text-on-primary font-body font-semibold px-12 py-4 rounded-xl shadow-[0_4px_20px_rgba(233,193,118,0.2)] hover:shadow-[0_6px_25px_rgba(233,193,118,0.3)] transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-3">
+              <span class="material-symbols-outlined">auto_awesome</span>
+              Generate Astral Blueprint
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Loading -->
+    <div id="loading" class="hidden relative z-10 flex flex-col items-center gap-6 py-20">
+      <div class="loader"></div>
+      <p class="text-on-surface-variant font-body text-sm tracking-widest uppercase">Reading the stars...</p>
+    </div>
+
+    <!-- Results Section -->
+    <section id="results" class="hidden relative z-10 w-full max-w-6xl px-6 mb-16">
+      <div class="text-center mb-16">
+        <h2 class="font-headline text-4xl text-on-surface mb-4">The Natal Synthesis</h2>
+        <p id="result-subtitle" class="font-body text-secondary max-w-2xl mx-auto"></p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <!-- Kundli Chart -->
+        <div class="lg:col-span-7">
+          <div class="bg-surface-container-high rounded-xl p-6 border border-outline-variant/20">
+            <!-- Chart header + toggle -->
+            <div class="flex items-center justify-between mb-5">
+              <h3 class="font-headline text-xl text-primary">Lagna Chart (D1)</h3>
+              <div class="flex rounded-lg overflow-hidden border border-outline-variant/30 text-xs font-label">
+                <button id="btn-north"
+                  onclick="switchChartMode('kundli-svg','north')"
+                  class="chart-tab-active px-4 py-2 transition-colors">
+                  North Indian
+                </button>
+                <button id="btn-south"
+                  onclick="switchChartMode('kundli-svg','south')"
+                  class="chart-tab-inactive px-4 py-2 transition-colors">
+                  South Indian
+                </button>
+              </div>
+            </div>
+            <div class="flex justify-center">
+              <svg id="kundli-svg" viewBox="0 0 420 420" width="100%" style="max-width:420px;" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+          </div>
+
+          <!-- Planet Table -->
+          <div class="bg-surface-container-high rounded-xl p-6 border border-outline-variant/20 mt-6">
+            <h3 class="font-headline text-xl text-primary mb-6">Planetary Positions</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-outline-variant/20">
+                    <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Planet</th>
+                    <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Sign</th>
+                    <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Degree</th>
+                    <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">House</th>
+                    <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Nakshatra</th>
+                    <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Awastha</th>
+                    <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="planet-table-body" class="divide-y divide-outline-variant/10"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Positions & Interpretations -->
+        <div class="lg:col-span-5 space-y-6">
+          <!-- Core Signs -->
+          <div id="core-signs" class="space-y-4"></div>
+
+          <!-- Astro Details -->
+          <div id="astro-details-card" class="bg-surface-bright/30 backdrop-blur-md p-6 rounded-xl border-t border-outline-variant/20 shadow-lg hidden">
+            <h4 class="font-label text-xs uppercase tracking-widest text-secondary mb-4">Astrological Details</h4>
+            <div id="astro-details-content" class="grid grid-cols-2 gap-3 text-sm"></div>
+          </div>
+
+          <!-- PDF Download -->
+          <button onclick="downloadPDF()" class="w-full bg-transparent border border-outline-variant/30 text-primary font-body py-4 rounded-xl hover:bg-white/5 transition-colors duration-300 flex items-center justify-center gap-3">
+            <span class="material-symbols-outlined">download</span>
+            Download Astral Report (PDF)
+          </button>
+
+          <!-- New Chart -->
+          <button onclick="resetForm()" class="w-full bg-surface-container text-on-surface-variant font-body py-3 rounded-xl hover:bg-surface-container-high transition-colors duration-300 flex items-center justify-center gap-3 text-sm">
+            <span class="material-symbols-outlined text-sm">refresh</span>
+            Generate New Chart
+          </button>
+        </div>
+      </div>
+
+      <!-- Interpretations -->
+      <div id="interpretations" class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GEMINI CHATBOT — appears after chart is generated
+         Pre-loaded with full chart data as context
+    ════════════════════════════════════════════════════════ -->
+    <section id="chatbot-section" class="hidden relative z-10 w-full max-w-3xl mx-auto px-6 mb-16">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center gap-3 bg-primary/10 border border-primary/20 rounded-full px-6 py-2 mb-4">
+          <span class="text-primary text-lg">✦</span>
+          <span class="font-label text-sm uppercase tracking-widest text-primary">Your Personal Astro Guide</span>
+          <span class="text-primary text-lg">✦</span>
+        </div>
+        <h2 class="font-headline text-3xl text-on-surface mb-2">Ask Jyotish</h2>
+        <p class="font-body text-on-surface-variant text-sm">Your AI guide already knows your complete birth chart. Ask anything.</p>
+      </div>
+
+      <!-- Suggested Questions -->
+      <div class="flex flex-wrap gap-2 justify-center mb-6">
+        <button onclick="document.getElementById('chat-input').value=this.textContent;sendChatMessage()" class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-xs font-label hover:border-primary/40 hover:text-primary transition-all">What career suits me?</button>
+        <button onclick="document.getElementById('chat-input').value=this.textContent;sendChatMessage()" class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-xs font-label hover:border-primary/40 hover:text-primary transition-all">Tell me about my personality</button>
+        <button onclick="document.getElementById('chat-input').value=this.textContent;sendChatMessage()" class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-xs font-label hover:border-primary/40 hover:text-primary transition-all">What does my Moon sign say?</button>
+        <button onclick="document.getElementById('chat-input').value=this.textContent;sendChatMessage()" class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-xs font-label hover:border-primary/40 hover:text-primary transition-all">When will I get married?</button>
+        <button onclick="document.getElementById('chat-input').value=this.textContent;sendChatMessage()" class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-xs font-label hover:border-primary/40 hover:text-primary transition-all">What are my strengths?</button>
+        <button onclick="document.getElementById('chat-input').value=this.textContent;sendChatMessage()" class="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant text-xs font-label hover:border-primary/40 hover:text-primary transition-all">Health advice for me?</button>
+      </div>
+
+      <!-- Chat Window -->
+      <div class="bg-surface-container-high rounded-2xl border border-outline-variant/20 overflow-hidden shadow-[0_0_40px_rgba(233,193,118,0.06)]">
+        <!-- Messages -->
+        <div id="chat-messages" class="h-96 overflow-y-auto p-6 space-y-1 scroll-smooth"></div>
+
+        <!-- Divider -->
+        <div class="border-t border-outline-variant/20"></div>
+
+        <!-- Input -->
+        <div class="flex items-end gap-3 p-4">
+          <textarea
+            id="chat-input"
+            onkeydown="handleChatKey(event)"
+            placeholder="Ask about your chart, destiny, relationships..."
+            rows="1"
+            class="flex-1 bg-surface-container rounded-xl border border-outline-variant/20 text-on-surface text-sm font-body px-4 py-3 focus:outline-none focus:border-primary/50 resize-none placeholder:text-outline transition-colors"
+            style="min-height:44px;max-height:120px;"
+            oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+          ></textarea>
+          <button
+            id="chat-send-btn"
+            onclick="sendChatMessage()"
+            class="w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary flex items-center justify-center hover:shadow-[0_0_20px_rgba(233,193,118,0.3)] transition-all duration-300 shrink-0 disabled:opacity-40"
+          >
+            <span class="material-symbols-outlined text-sm">send</span>
+          </button>
+        </div>
+      </div>
+      <p class="text-center text-xs text-outline mt-3">Powered by Gemini AI · Responses are for guidance only</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#1a1b21] w-full border-t border-[#4e4639]/10 flex flex-col md:flex-row justify-between items-center px-12 py-10 gap-6 mt-auto">
+    <div class="text-lg font-serif italic text-[#e9c176]">Celestial Elite</div>
+    <div class="flex flex-wrap gap-6 items-center justify-center font-sans text-sm text-slate-500">
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Privacy Policy</a>
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Terms of Grace</a>
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Contact Bureau</a>
+    </div>
+    <div class="font-sans text-sm text-slate-500">© 2024 Celestial Elite. Bound by the Stars.</div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/kundli-chart.js"></script>
+  <script src="js/birth-chart.js"></script>
+</body>
+</html>

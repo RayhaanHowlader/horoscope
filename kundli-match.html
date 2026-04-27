@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Kundli Matching - Celestial Elite</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface": "#e3e1e9","on-surface-variant": "#d1c5b4","outline-variant": "#4e4639","tertiary": "#c8bfff","surface-variant": "#34343a","surface-container-high": "#292a2f","primary-fixed": "#ffdea5","surface-bright": "#38393f","surface-container": "#1e1f25","secondary-fixed": "#dbe3ec","on-primary": "#412d00","tertiary-fixed-dim": "#c8bfff","on-secondary-container": "#b1b9c1","surface-container-highest": "#34343a","surface-tint": "#e9c176","primary-fixed-dim": "#e9c176","background": "#121318","secondary": "#bfc7cf","outline": "#9a8f80","primary-container": "#c5a059","surface-container-low": "#1a1b21","secondary-container": "#424a51","on-primary-container": "#4e3700","surface-container-lowest": "#0d0e13","primary": "#e9c176","on-background": "#e3e1e9","tertiary-container": "#a69ede"
+          },
+          borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" },
+          fontFamily: { headline: ["Noto Serif"], body: ["Manrope"], label: ["Manrope"] }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    .loader { border: 3px solid rgba(233,193,118,0.1); border-top-color: #e9c176; border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: #1e1f25; border: 1px solid rgba(78,70,57,0.4); border-radius: 0.5rem; z-index: 100; max-height: 200px; overflow-y: auto; }
+    .autocomplete-item { padding: 10px 16px; cursor: pointer; font-size: 14px; color: #e3e1e9; }
+    .autocomplete-item:hover { background: rgba(233,193,118,0.08); color: #e9c176; }
+    .score-bar { height: 8px; border-radius: 4px; background: rgba(233,193,118,0.1); overflow: hidden; }
+    .score-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+    .dosha-badge-yes { background: rgba(255,100,100,0.15); color: #ff8080; border: 1px solid rgba(255,100,100,0.3); }
+    .dosha-badge-no { background: rgba(100,200,100,0.15); color: #80cc80; border: 1px solid rgba(100,200,100,0.3); }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased min-h-screen flex flex-col">
+
+  <!-- Nav -->
+  <nav class="bg-[#121318]/80 backdrop-blur-2xl top-0 sticky border-b border-[#4e4639]/15 shadow-2xl shadow-black/40 z-50">
+    <div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+      <a href="index.html" class="text-2xl font-serif tracking-[0.2em] uppercase text-[#e9c176]">Celestial Elite</a>
+      <div class="hidden md:flex gap-8 items-center font-serif tracking-tight">
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2" href="index.html">Home</a>
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2" href="horoscope.html">Horoscopes</a>
+        <a class="text-slate-400 hover:text-[#e9c176] transition-colors px-3 py-2" href="birth-chart.html">Birth Charts</a>
+        <a class="text-[#e9c176] font-bold border-b-2 border-[#e9c176] pb-1 px-3 py-2" href="kundli-match.html">Kundli Match</a>
+      </div>
+      <button class="md:hidden text-[#e9c176]" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+    <div id="mobile-menu" class="hidden md:hidden bg-[#1a1b21] border-t border-[#4e4639]/20 px-6 py-4 flex flex-col gap-4">
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="index.html">Home</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="horoscope.html">Horoscopes</a>
+      <a class="text-slate-400 hover:text-[#e9c176] py-2" href="birth-chart.html">Birth Charts</a>
+      <a class="text-[#e9c176] font-medium py-2" href="kundli-match.html">Kundli Match</a>
+    </div>
+  </nav>
+
+  <main class="flex-grow w-full relative overflow-hidden py-24">
+    <div class="absolute inset-0 z-0 pointer-events-none opacity-10 bg-[url('https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?auto=format&fit=crop&w=3000&q=80')] bg-cover bg-center mix-blend-screen"></div>
+
+    <!-- Header -->
+    <div class="relative z-10 text-center mb-16 px-6">
+      <h1 class="font-headline text-5xl md:text-6xl text-primary tracking-wide mb-6">Kundli Matching</h1>
+      <p class="font-body text-lg text-on-surface-variant max-w-xl mx-auto font-light leading-relaxed">Discover cosmic compatibility through Guna Milan, Dosha analysis, and detailed astrological insights.</p>
+    </div>
+
+    <!-- Form -->
+    <section class="relative z-10 w-full max-w-5xl mx-auto px-6 mb-16">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Boy's Details -->
+        <div class="bg-surface-variant/40 backdrop-blur-3xl rounded-xl p-8 border border-outline-variant/15 shadow-[0_0_40px_rgba(233,193,118,0.04)]">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+              <span class="material-symbols-outlined text-primary text-sm">person</span>
+            </div>
+            <h2 class="font-headline text-xl text-primary">Boy's Details</h2>
+          </div>
+          <div class="space-y-5">
+            <div>
+              <label class="block font-label text-xs text-secondary mb-2 uppercase tracking-wider">Full Name</label>
+              <input id="m-name" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-primary px-4 py-3 bg-transparent focus:outline-none placeholder:text-outline" placeholder="e.g. Rahul Sharma" type="text"/>
+            </div>
+            <div>
+              <label class="block font-label text-xs text-secondary mb-2 uppercase tracking-wider">Date of Birth</label>
+              <input id="m-dob" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-primary px-4 py-3 bg-transparent focus:outline-none [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-50" type="date"/>
+            </div>
+            <div>
+              <label class="block font-label text-xs text-secondary mb-2 uppercase tracking-wider">Time of Birth</label>
+              <input id="m-tob" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-primary px-4 py-3 bg-transparent focus:outline-none [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-50" type="time"/>
+            </div>
+            <div class="relative">
+              <label class="block font-label text-xs text-secondary mb-2 uppercase tracking-wider">Place of Birth</label>
+              <div class="flex items-center bg-surface-container-highest/50 border-b border-outline-variant/30 focus-within:border-primary transition-colors">
+                <span class="material-symbols-outlined text-outline pl-4 text-sm">location_on</span>
+                <input id="m-place" class="w-full bg-transparent border-none text-on-surface focus:ring-0 px-3 py-3 placeholder:text-outline focus:outline-none text-sm" placeholder="City of birth..." type="text" autocomplete="off"/>
+              </div>
+              <div id="m-place-suggestions" class="autocomplete-list hidden"></div>
+              <input type="hidden" id="m-lat"/>
+              <input type="hidden" id="m-lon"/>
+              <input type="hidden" id="m-tz"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Girl's Details -->
+        <div class="bg-surface-variant/40 backdrop-blur-3xl rounded-xl p-8 border border-outline-variant/15 shadow-[0_0_40px_rgba(200,191,255,0.04)]">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center border border-tertiary/20">
+              <span class="material-symbols-outlined text-tertiary text-sm">person</span>
+            </div>
+            <h2 class="font-headline text-xl text-tertiary">Girl's Details</h2>
+          </div>
+          <div class="space-y-5">
+            <div>
+              <label class="block font-label text-xs text-secondary mb-2 uppercase tracking-wider">Full Name</label>
+              <input id="f-name" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-tertiary px-4 py-3 bg-transparent focus:outline-none placeholder:text-outline" placeholder="e.g. Priya Patel" type="text"/>
+            </div>
+            <div>
+              <label class="block font-label text-xs text-secondary mb-2 uppercase tracking-wider">Date of Birth</label>
+              <input id="f-dob" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-tertiary px-4 py-3 bg-transparent focus:outline-none [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-50" type="date"/>
+            </div>
+            <div>
+              <label class="block font-label text-xs text-secondary mb-2 uppercase tracking-wider">Time of Birth</label>
+              <input id="f-tob" class="w-full bg-surface-container-highest/50 border-b border-outline-variant/30 text-on-surface focus:border-tertiary px-4 py-3 bg-transparent focus:outline-none [&::-webkit-calendar-picker-indicator]:invert [&::-webkit-calendar-picker-indicator]:opacity-50" type="time"/>
+            </div>
+            <div class="relative">
+              <label class="block font-label text-xs text-secondary mb-2 uppercase tracking-wider">Place of Birth</label>
+              <div class="flex items-center bg-surface-container-highest/50 border-b border-outline-variant/30 focus-within:border-tertiary transition-colors">
+                <span class="material-symbols-outlined text-outline pl-4 text-sm">location_on</span>
+                <input id="f-place" class="w-full bg-transparent border-none text-on-surface focus:ring-0 px-3 py-3 placeholder:text-outline focus:outline-none text-sm" placeholder="City of birth..." type="text" autocomplete="off"/>
+              </div>
+              <div id="f-place-suggestions" class="autocomplete-list hidden"></div>
+              <input type="hidden" id="f-lat"/>
+              <input type="hidden" id="f-lon"/>
+              <input type="hidden" id="f-tz"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div id="form-error" class="hidden text-red-400 text-sm text-center py-2 bg-red-900/20 rounded-lg px-4 mt-6"></div>
+
+      <!-- Submit -->
+      <div class="flex justify-center mt-10">
+        <button onclick="matchKundli()" class="bg-gradient-to-r from-primary to-primary-container text-on-primary font-body font-semibold px-14 py-4 rounded-xl shadow-[0_4px_20px_rgba(233,193,118,0.2)] hover:shadow-[0_6px_25px_rgba(233,193,118,0.3)] transition-all duration-300 transform hover:-translate-y-1 flex items-center gap-3">
+          <span class="material-symbols-outlined">favorite</span>
+          Check Compatibility
+        </button>
+      </div>
+    </section>
+
+    <!-- Loading -->
+    <div id="loading" class="hidden relative z-10 flex flex-col items-center gap-6 py-20">
+      <div class="loader"></div>
+      <p class="text-on-surface-variant font-body text-sm tracking-widest uppercase">Aligning the stars...</p>
+    </div>
+
+    <!-- Results -->
+    <section id="results" class="hidden relative z-10 w-full max-w-5xl mx-auto px-6 mb-16">
+      <!-- Score Header -->
+      <div class="bg-surface-container-high rounded-xl p-10 border border-outline-variant/20 mb-8 text-center">
+        <p class="font-label text-xs uppercase tracking-widest text-secondary mb-4">Compatibility Score</p>
+        <div class="flex items-center justify-center gap-6 mb-6">
+          <span id="match-boy-name" class="font-headline text-2xl text-primary"></span>
+          <span class="material-symbols-outlined text-tertiary text-3xl">favorite</span>
+          <span id="match-girl-name" class="font-headline text-2xl text-tertiary"></span>
+        </div>
+        <div class="flex items-center justify-center gap-4 mb-4">
+          <span id="score-value" class="font-headline text-6xl text-primary"></span>
+          <span class="font-headline text-3xl text-on-surface-variant">/36</span>
+        </div>
+        <div class="score-bar max-w-xs mx-auto mb-4">
+          <div id="score-bar-fill" class="score-fill bg-gradient-to-r from-primary to-primary-container" style="width:0%"></div>
+        </div>
+        <p id="score-message" class="font-body text-on-surface-variant text-lg"></p>
+      </div>
+
+      <!-- Guna Milan Table -->
+      <div class="bg-surface-container-high rounded-xl p-8 border border-outline-variant/20 mb-8">
+        <h3 class="font-headline text-2xl text-primary mb-6">Guna Milan (Ashtakoot)</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-outline-variant/20">
+                <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Koot</th>
+                <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Significance</th>
+                <th class="text-left py-3 px-4 text-primary font-label uppercase tracking-wider text-xs">Boy</th>
+                <th class="text-left py-3 px-4 text-tertiary font-label uppercase tracking-wider text-xs">Girl</th>
+                <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Max</th>
+                <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Score</th>
+              </tr>
+            </thead>
+            <tbody id="guna-table-body" class="divide-y divide-outline-variant/10"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Dosha Analysis -->
+      <div class="bg-surface-container-high rounded-xl p-8 border border-outline-variant/20 mb-8">
+        <h3 class="font-headline text-2xl text-primary mb-6">Dosha Analysis</h3>
+        <div id="dosha-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+      </div>
+
+      <!-- Astro Details Comparison -->
+      <div class="bg-surface-container-high rounded-xl p-8 border border-outline-variant/20 mb-8">
+        <h3 class="font-headline text-2xl text-primary mb-6">Astrological Details</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-outline-variant/20">
+                <th class="text-left py-3 px-4 text-secondary font-label uppercase tracking-wider text-xs">Parameter</th>
+                <th class="text-left py-3 px-4 text-primary font-label uppercase tracking-wider text-xs">Boy</th>
+                <th class="text-left py-3 px-4 text-tertiary font-label uppercase tracking-wider text-xs">Girl</th>
+              </tr>
+            </thead>
+            <tbody id="astro-compare-body" class="divide-y divide-outline-variant/10"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Remedies -->
+      <div id="remedies-section" class="bg-surface-container-high rounded-xl p-8 border border-outline-variant/20 mb-8 hidden">
+        <h3 class="font-headline text-2xl text-primary mb-2">Remedies & Suggestions</h3>
+        <p class="text-on-surface-variant text-sm mb-6">Based on the dosha analysis, the following remedies are recommended:</p>
+        <div id="remedies-content" class="space-y-4"></div>
+      </div>
+
+      <!-- Final Conclusion from API -->
+      <div id="final-conclusion" class="bg-surface-container-high rounded-xl p-8 border border-primary/20 mb-8 hidden">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="material-symbols-outlined text-primary">auto_awesome</span>
+          <h3 class="font-headline text-xl text-primary">Final Verdict</h3>
+        </div>
+        <p id="final-conclusion-text" class="font-body text-on-surface leading-relaxed"></p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="downloadMatchPDF()" class="flex-1 bg-transparent border border-outline-variant/30 text-primary font-body py-4 rounded-xl hover:bg-white/5 transition-colors flex items-center justify-center gap-3">
+          <span class="material-symbols-outlined">download</span>
+          Download Compatibility Report
+        </button>
+        <button onclick="resetMatchForm()" class="flex-1 bg-surface-container text-on-surface-variant font-body py-4 rounded-xl hover:bg-surface-container-high transition-colors flex items-center justify-center gap-3">
+          <span class="material-symbols-outlined">refresh</span>
+          New Match
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#1a1b21] w-full border-t border-[#4e4639]/10 flex flex-col md:flex-row justify-between items-center px-12 py-10 gap-6 mt-auto">
+    <div class="text-lg font-serif italic text-[#e9c176]">Celestial Elite</div>
+    <div class="flex flex-wrap gap-6 items-center justify-center font-sans text-sm text-slate-500">
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Privacy Policy</a>
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Terms of Grace</a>
+      <a class="hover:text-[#e9c176] transition-colors" href="#">Contact Bureau</a>
+    </div>
+    <div class="font-sans text-sm text-slate-500">© 2024 Celestial Elite. Bound by the Stars.</div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/kundli-match.js"></script>
+</body>
+</html>
